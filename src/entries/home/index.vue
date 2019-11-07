@@ -146,6 +146,8 @@ class people:
 # 实例化类
 p = people('runoob',10,30)
 p.speak()
+a=input('输入')
+print(a)
             `,
             cmOption: {
                 autoCloseBrackets: true,
@@ -184,13 +186,23 @@ p.speak()
             disableStdin: false
         });
         this.terminal.open(document.querySelector('#xterm'));
-        this.terminal.write(`潭州教育 \r\n${new Date()}\r\n\r\n$`);
+        this.terminal.write(`潭州教育 \r\n${new Date()}\r\n\r\n`);
         this.terminal.onData((e: any): any => {
             this.ws.emit('message', e);
         });
         this.ws.on('message', (data: any) => {
-            this.terminal.write(data.replace('message', ''));
+            this.terminal.write(data);
         });
+        window.addEventListener(
+            'beforeunload',
+            () => {
+                this.ws.emit('close');
+                setTimeout(() => {
+                    this.ws.close();
+                }, 0);
+            },
+            false
+        );
     }
 };
 </script>
