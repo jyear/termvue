@@ -46,7 +46,7 @@ import 'codemirror/keymap/emacs.js';
 //
 import { Terminal, IEvent } from 'xterm';
 import 'xterm/css/xterm.css';
-
+const serverURL = '47.112.109.55';
 export default {
     components: {
         codemirror
@@ -172,22 +172,36 @@ print(a)
             //this.ws.emit('leftmessage', 'python\r\n');
             //this.ws.emit('leftmessage', this.code + '\r\n');
             //this.ws.emit('leftmessage', 'exit()\r\n');
-            console.log(this.code);
-            let res = await fetch(
-                `http://47.112.109.55:8080/python/getPythonUserUrl?code=9999&userName=ccccccccc`,
+            // console.log(this.code);
+            // var form = new FormData();
+            // form.append('code', this.code);
+            // form.append('userName', `ccccccccc`);
+            let res: any = await fetch(
+                `http://${serverURL}:8080/python/getPythonUserUrl`,
                 {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     method: 'POST',
                     body: JSON.stringify({
                         code: this.code,
                         userName: 'ccccccccc'
                     })
                 }
-            );
+            ).then(res => res.json());
+            if (res && res.url) {
+                this.ws.emit('leftmessage', res.url);
+            } else {
+                console.log(res);
+            }
 
-            console.log(res);
+            // console.log(res);
+            // if (res.status == 200) {
+
+            // }
         },
         async getPid() {
-            let res = await fetch('http://47.112.109.55:8085/term', {
+            let res = await fetch(`http://${serverURL}:8085/term`, {
                 method: 'POST'
             }).then(res => {
                 return res.text();
@@ -198,7 +212,7 @@ print(a)
     async mounted() {
         let res = JSON.parse(await this.getPid());
         this.ws = window.io(
-            `ws://47.112.109.55:8085/termsocket?pid=${res.data}`
+            `ws://${serverURL}:8085/termsocket?pid=${res.data}`
         );
         this.terminal = new Terminal({
             rendererType: 'canvas',
