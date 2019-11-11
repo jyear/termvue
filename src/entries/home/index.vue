@@ -131,7 +131,7 @@ export default {
             //     def __init__(self, mixin = 'Hello'):
             //         self.mixin = mixin
             // `,
-            code: `#-*-coding:utf-8-*-
+            code: `
 #!/usr/bin/python3
 
 #类定义
@@ -184,7 +184,9 @@ print(a)
                     },
                     method: 'POST',
                     body: JSON.stringify({
-                        code: this.code,
+                        //`#-*-coding:utf-8-*-
+                        code: `${this.code}
+                        `,
                         userName: 'ccccccccc'
                     })
                 }
