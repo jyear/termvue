@@ -131,9 +131,9 @@ export default {
             //     def __init__(self, mixin = 'Hello'):
             //         self.mixin = mixin
             // `,
-            code: `
+            code: `#-*-coding:utf-8-*-
 #!/usr/bin/python3
- 
+
 #类定义
 class people:
     #定义基本属性
