@@ -2,17 +2,23 @@
 @import './index.less';
 </style>
 <template>
-    <div class="demo-page">
-        <div class="demo-page__left">
-            <div class="left-top">
-                <codemirror v-model="code" :options="cmOption"></codemirror>
-            </div>
-            <div class="left-bottom">
-                <button @click="getCode">获取内容</button>
-            </div>
-        </div>
-        <div class="right" id="xterm"></div>
+  <div class="demo-page">
+    <div class="demo-page__left">
+      <div class="left-top">
+        <codemirror
+          v-model="code"
+          :options="cmOption"
+        ></codemirror>
+      </div>
+      <div class="left-bottom">
+        <button @click="getCode">获取内容</button>
+      </div>
     </div>
+    <div
+      class="right"
+      id="xterm"
+    ></div>
+  </div>
 </template>
 <script lang='ts'>
 interface Data {
@@ -162,13 +168,26 @@ print(a)
         };
     },
     methods: {
-        getCode() {
+        async getCode() {
             //this.ws.emit('leftmessage', 'python\r\n');
-            this.ws.emit('leftmessage', this.code + '\r\n');
+            //this.ws.emit('leftmessage', this.code + '\r\n');
             //this.ws.emit('leftmessage', 'exit()\r\n');
+            console.log(this.code);
+            let res = await fetch(
+                `http://47.112.109.55:8080/python/getPythonUserUrl?code=9999&userName=ccccccccc`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        code: this.code,
+                        userName: 'ccccccccc'
+                    })
+                }
+            );
+
+            console.log(res);
         },
         async getPid() {
-            let res = await fetch('http://192.168.1.167:8085/term', {
+            let res = await fetch('http://47.112.109.55:8085/term', {
                 method: 'POST'
             }).then(res => {
                 return res.text();
@@ -179,7 +198,7 @@ print(a)
     async mounted() {
         let res = JSON.parse(await this.getPid());
         this.ws = window.io(
-            `ws://192.168.1.167:8085/termsocket?pid=${res.data}`
+            `ws://47.112.109.55:8085/termsocket?pid=${res.data}`
         );
         this.terminal = new Terminal({
             rendererType: 'canvas',
