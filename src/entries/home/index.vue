@@ -170,7 +170,7 @@ print(a)
     methods: {
         async getCode() {
             //this.ws.emit('leftmessage', 'python\r\n');
-            //this.ws.emit('leftmessage', this.code + '\r\n');
+            this.ws.emit('leftmessage', this.code + '\r\n');
             //this.ws.emit('leftmessage', 'exit()\r\n');
             // console.log(this.code);
             // var form = new FormData();
